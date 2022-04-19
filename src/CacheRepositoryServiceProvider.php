@@ -2,34 +2,33 @@
 
 namespace Xkairo\CacheRepositoryLaravel;
 
-use Spatie\LaravelPackageTools\Package;
-use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Illuminate\Support\ServiceProvider;
 use Xkairo\CacheRepositoryLaravel\Console\Commands\MakeCacheRepositoryCommand;
 
-class CacheRepositoryServiceProvider extends PackageServiceProvider
+class CacheRepositoryServiceProvider extends ServiceProvider
 {
-    public function configurePackage(Package $package): void
+    public function boot(): void
     {
-        $package
-            ->name('cache-repository-laravel')
-            ->hasCommand(MakeCacheRepositoryCommand::class);
+        $this->loadConfig();
+        $this->loadCommands();
     }
 
-    public function register()
+    private function loadCommands(): void
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                MakeCacheRepositoryCommand::class,
+            ]);
+        }
+    }
+
+    private function loadConfig(): void
     {
         $this->mergeConfigFrom(
             __DIR__ . '/../config/paths.php',
             'paths'
         );
-    }
 
-    public function boot(): void
-    {
-        $this->loadConfig();
-    }
-
-    private function loadConfig(): void
-    {
         $this->publishes(
             [
                 __DIR__ . '/../config/paths.php' => config_path('paths.php'),
