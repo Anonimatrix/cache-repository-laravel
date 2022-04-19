@@ -1,0 +1,17 @@
+    protected $repository;
+    protected $name_model;
+
+    public function setNameModel(Request $request)
+    {
+        $name_model_id = $request->route('name_model_id');
+
+        if ($name_model_id) {
+            $this->name_model = $this->repository->getById($name_model_id);
+        }
+    }
+
+    public function __construct(NameModelCache $name_modelCache, Request $request)
+    {
+        $this->repository = $name_modelCache;
+        $this->setNameModel($request);
+    }

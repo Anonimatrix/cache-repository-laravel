@@ -1,16 +1,19 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "xkairo/cache-repository-laravel",
+    "description": "A Laravel package to create the files needed to cache repositories of Eloquent models",
     "keywords": [
-        ":vendor_name",
+        "xkairo",
         "laravel",
-        ":package_slug"
+        "cache-repository-laravel"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/Anonimatrix/cache-repository-laravel",
     "license": "MIT",
+    "scripts": {
+        "test": "vendor/phpunit/phpunit/phpunit"
+    },
     "authors": [
         {
-            "name": ":author_name",
+            "name": "xkairo",
             "email": "author@domain.com",
             "role": "Developer"
         }
@@ -34,19 +37,13 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories"
+            "Xkairo\\CacheRepositoryLaravel\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests"
+            "Xkairo\\CacheRepositoryLaravel\\Tests\\": "tests"
         }
-    },
-    "scripts": {
-        "analyse": "vendor/bin/phpstan analyse",
-        "test": "vendor/bin/pest",
-        "test-coverage": "vendor/bin/pest --coverage"
     },
     "config": {
         "sort-packages": true
@@ -54,11 +51,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
-            ],
-            "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
-            }
+                "Xkairo\\CacheRepositoryLaravel\\CacheRepositoryServiceProvider"
+            ]
         }
     },
     "minimum-stability": "dev",

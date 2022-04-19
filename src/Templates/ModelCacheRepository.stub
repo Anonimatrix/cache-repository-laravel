@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Cache;
+
+use App\Repositories\NameModelRepositoryInterface;
+use Illuminate\Http\Request;
+use Illuminate\Cache\Repository as Cache;
+
+class NameModelCacheRepository extends BaseCache implements NameModelRepositoryInterface
+{
+    protected $repository;
+
+    public function __construct(NameModelRepositoryInterface $repository, Cache $cache, Request $request)
+    {
+        parent::__construct($repository, $cache, $request, 'name_model');
+        $this->repository = $repository;
+    }
+}

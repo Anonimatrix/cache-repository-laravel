@@ -1,32 +1,29 @@
 <?php
 
-namespace VendorName\Skeleton\Tests;
+namespace Xkairo\CacheRepositoryLaravel\Tests;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use VendorName\Skeleton\SkeletonServiceProvider;
+use Xkairo\CacheRepositoryLaravel\CacheRepositoryServiceProvider;
 
 class TestCase extends Orchestra
 {
     protected function setUp(): void
     {
         parent::setUp();
-
-        Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'VendorName\\Skeleton\\Database\\Factories\\'.class_basename($modelName).'Factory'
-        );
     }
 
     protected function getPackageProviders($app)
     {
         return [
-            SkeletonServiceProvider::class,
+            CacheRepositoryServiceProvider::class,
         ];
     }
 
     public function getEnvironmentSetUp($app)
     {
-        config()->set('database.default', 'testing');
+        config()->set('paths.repositorie_interface_path', __DIR__ . '/Repositories');
+        config()->set('paths.repositorie_eloquent_path', __DIR__ . '/Repositories/EloquentRepositories');
+        config()->set('paths.repositorie_cache_path', __DIR__ . '/Cache');
 
         /*
         $migration = include __DIR__.'/../database/migrations/create_skeleton_table.php.stub';

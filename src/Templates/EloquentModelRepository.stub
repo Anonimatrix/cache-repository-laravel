@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Repositories\EloquentRepositories;
+
+use App\Models\NameModel;
+use App\Repositories\NameModelRepositoryInterface;
+
+class NameModelRepository extends BaseRepository implements NameModelRepositoryInterface
+{
+    public function __construct(NameModel $name_model)
+    {
+        parent::__construct($name_model);
+    }
+}
