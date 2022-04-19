@@ -55,6 +55,12 @@
             ]
         }
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Anonimatrix/cache-repository-laravel"
+        }
+    ],
     "minimum-stability": "dev",
     "prefer-stable": true
 }
