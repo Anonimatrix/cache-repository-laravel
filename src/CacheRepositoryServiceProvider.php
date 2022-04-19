@@ -18,7 +18,7 @@ class CacheRepositoryServiceProvider extends PackageServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/config/paths.php',
+            __DIR__ . '/../config/paths.php',
             'paths'
         );
     }
