@@ -15,6 +15,14 @@ class CacheRepositoryServiceProvider extends PackageServiceProvider
             ->hasCommand(MakeCacheRepositoryCommand::class);
     }
 
+    public function register()
+    {
+        $this->mergeConfigFrom(
+            __DIR__ . '/config/paths.php',
+            'paths'
+        );
+    }
+
     public function boot(): void
     {
         $this->loadConfig();
