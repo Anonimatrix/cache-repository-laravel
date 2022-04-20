@@ -1,5 +1,6 @@
 {
     "name": "xkairo/cache-repository-laravel",
+    "version": "1.0",
     "description": "A Laravel package to create the files needed to cache repositories of Eloquent models",
     "keywords": [
         "xkairo",
