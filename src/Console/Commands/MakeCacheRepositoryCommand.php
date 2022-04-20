@@ -74,9 +74,9 @@ class MakeCacheRepositoryCommand extends Command
             $regExpBeginningClassAppServiceProvider = "/(class.*?AppServiceProvider.*?\n{)/";
 
             if (preg_match($regExpBind, $appServiceFile)) {
-                $newFileContent = preg_replace($regExpBind, '${1}' . "\n\t" . $name . "Interface::class => " . $name . "Repository::class,", $appServiceFile);
+                $newFileContent = preg_replace($regExpBind, '${1}' . "\n\t\t" . $name . "Interface::class => " . $name . "Repository::class,", $appServiceFile);
             } else if (preg_match($regExpBeginningClassAppServiceProvider, $appServiceFile)) {
-                $codeBinding = '${1}' . "\n\npublic \$bindings = [\n\t" . $name . "Interface::class => " . $name . "Repository::class,\n];\n";
+                $codeBinding = '${1}' . "\n\n\tpublic \$bindings = [\n\t\t" . $name . "Interface::class => " . $name . "Repository::class,\n\t];\n";
                 $newFileContent = preg_replace($regExpBeginningClassAppServiceProvider, $codeBinding, $appServiceFile);
             } else {
                 $this->error('App Service Provider has a invalid format');
