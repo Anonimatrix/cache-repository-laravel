@@ -74,7 +74,7 @@ class MakeCacheRepositoryCommand extends Command
             $regExpBeginningClassAppServiceProvider = "/(class.*?AppServiceProvider.*?\n{)/";
 
             if (preg_match($regExpBind, $appServiceFile)) {
-                $newFileContent = preg_replace($regExpBind, '${1}' . "\n" . $name . "Interface::class => " . $name . "Repository::class,", $appServiceFile);
+                $newFileContent = preg_replace($regExpBind, '${1}' . "\n\t" . $name . "Interface::class => " . $name . "Repository::class,", $appServiceFile);
             } else if (preg_match($regExpBeginningClassAppServiceProvider, $appServiceFile)) {
                 $codeBinding = '${1}' . "\n\npublic \$bindings = [\n\t" . $name . "Interface::class => " . $name . "Repository::class,\n];\n";
                 $newFileContent = preg_replace($regExpBeginningClassAppServiceProvider, $codeBinding, $appServiceFile);
