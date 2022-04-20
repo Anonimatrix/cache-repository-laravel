@@ -57,6 +57,37 @@ class MakeCacheRepositoryCommand extends Command
         $this->createFile($name, $this->templatePath . '/ModelCacheRepository.stub', $this->repositorieCachePath . "/$name" . "CacheRepository.php", 'Cache Repository');
         //Comment in console the code for the Controller
         $this->getCodeForController($name, $this->templatePath . '/ControllerModelRepository.stub');
+
+        $this->chargeBindInAppProvider($name);
+    }
+
+    public function chargeBindInAppProvider($name)
+    {
+        $appProviderPath = app_path('/Providers/AppServiceProvider.php');
+
+        $appServiceFile = file_get_contents($appProviderPath);
+
+        $newFileContent = "";
+
+        if ($appServiceFile) {
+            $regExpBind = '/(\$bindings.*?=.*?\[)/';
+            $regExpBeginningClassAppServiceProvider = "/(class.*?AppServiceProvider.*?\n{)/";
+
+            if (preg_match($regExpBind, $appServiceFile)) {
+                $newFileContent = preg_replace($regExpBind, '${1}' . "\n" . $name . "Interface::class => " . $name . "Repository::class", $appServiceFile);
+            } else if (preg_match($regExpBeginningClassAppServiceProvider, $appServiceFile)) {
+                $codeBinding = '${1}' . "\n\npublic \$bindings = [\n\t" . $name . "Interface::class => " . $name . "Repository::class,\n];\n";
+                $newFileContent = preg_replace($regExpBeginningClassAppServiceProvider, $codeBinding, $appServiceFile);
+            } else {
+                $this->error('App Service Provider has a invalid format');
+            }
+
+            file_put_contents($appProviderPath, $newFileContent);
+
+            $this->info("AppServiceProvider changed succesfully");
+        } else {
+            $this->error('Error opening App Service Provider');
+        }
     }
 
     public function createPaths()
