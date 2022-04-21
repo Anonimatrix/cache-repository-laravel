@@ -74,7 +74,7 @@ class MakeCacheRepositoryCommand extends Command
             $regExpBind = '/(\$bindings.*?=.*?\[)/';
             $regExpBeginningClassAppServiceProvider = "/(class.*?AppServiceProvider.*?\n{)/";
 
-            if (preg_match($regExpNamespace, $appProviderPath)) {
+            if (preg_match($regExpNamespace, $appServiceFile)) {
                 $importInterfaceCode = "use App\Repositories\${$name}RepositoryInterface;";
                 $importEloquentRepositoryCode = "use App\Repositories\EloquentRepositories\${$name}Repository;";
 
