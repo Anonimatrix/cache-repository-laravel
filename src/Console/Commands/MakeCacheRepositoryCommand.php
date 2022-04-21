@@ -75,8 +75,8 @@ class MakeCacheRepositoryCommand extends Command
             $regExpBeginningClassAppServiceProvider = "/(class.*?AppServiceProvider.*?\n{)/";
 
             if (preg_match($regExpNamespace, $appServiceFile)) {
-                $importInterfaceCode = "use App\Repositories" . "$name" . "RepositoryInterface;";
-                $importEloquentRepositoryCode = "use App\Repositories\EloquentRepositories" . $name . "Repository;";
+                $importInterfaceCode = "use App\Repositories\\" . "$name" . "RepositoryInterface;";
+                $importEloquentRepositoryCode = "use App\Repositories\EloquentRepositories\\" . $name . "Repository;";
 
                 $importBindings = "\n" . $importEloquentRepositoryCode . "\n" . $importInterfaceCode;
                 $newFileContent = preg_replace($regExpNamespace, '${1}' . "\n" . $importBindings, $appServiceFile);
@@ -85,9 +85,9 @@ class MakeCacheRepositoryCommand extends Command
             }
 
             if (preg_match($regExpBind, $appServiceFile)) {
-                $newFileContent = preg_replace($regExpBind, '${1}' . "\n\t\t" . $name . "Interface::class => " . $name . "Repository::class,", $newFileContent ?? $appServiceFile);
+                $newFileContent = preg_replace($regExpBind, '${1}' . "\n\t\t" . $name . "RepositoryInterface::class => " . $name . "Repository::class,", $newFileContent ?? $appServiceFile);
             } else if (preg_match($regExpBeginningClassAppServiceProvider, $appServiceFile)) {
-                $codeBinding = '${1}' . "\n\n\tpublic \$bindings = [\n\t\t" . $name . "Interface::class => " . $name . "Repository::class,\n\t];\n";
+                $codeBinding = '${1}' . "\n\n\tpublic \$bindings = [\n\t\t" . $name . "RepositoryInterface::class => " . $name . "Repository::class,\n\t];\n";
                 $newFileContent = preg_replace($regExpBeginningClassAppServiceProvider, $codeBinding, $newFileContent ?? $appServiceFile);
             } else {
                 $this->error('App Service Provider has a invalid format');
