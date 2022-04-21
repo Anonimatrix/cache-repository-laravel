@@ -75,8 +75,8 @@ class MakeCacheRepositoryCommand extends Command
             $regExpBeginningClassAppServiceProvider = "/(class.*?AppServiceProvider.*?\n{)/";
 
             if (preg_match($regExpNamespace, $appServiceFile)) {
-                $importInterfaceCode = "use App\Repositories\${$name}RepositoryInterface;";
-                $importEloquentRepositoryCode = "use App\Repositories\EloquentRepositories\${$name}Repository;";
+                $importInterfaceCode = "use App\Repositories\\${$name}RepositoryInterface;";
+                $importEloquentRepositoryCode = "use App\Repositories\EloquentRepositories\\${$name}Repository;";
 
                 $importBindings = "\n" . $importEloquentRepositoryCode . "\n" . $importInterfaceCode;
                 $newFileContent = preg_replace($regExpNamespace, '${1}' . "\n" . $importBindings, $appServiceFile);
