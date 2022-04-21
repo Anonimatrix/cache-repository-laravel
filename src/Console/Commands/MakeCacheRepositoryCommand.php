@@ -70,8 +70,19 @@ class MakeCacheRepositoryCommand extends Command
         $newFileContent = "";
 
         if ($appServiceFile) {
+            $regExpNamespace = '/(namespace.*?;)/';
             $regExpBind = '/(\$bindings.*?=.*?\[)/';
             $regExpBeginningClassAppServiceProvider = "/(class.*?AppServiceProvider.*?\n{)/";
+
+            if (preg_match($regExpNamespace, $appProviderPath)) {
+                $importInterfaceCode = "use App\Repositories\${$name}RepositoryInterface;";
+                $importEloquentRepositoryCode = "use App\Repositories\EloquentRepositories\${$name}Repository;";
+
+                $importBindings = $importEloquentRepositoryCode . "\n" . $importInterfaceCode;
+                $newFileContent = preg_replace($regExpNamespace, '${1}' . "\n" . $importBindings, $appServiceFile);
+            } else {
+                $this->error('App Service Provider has a invalid format');
+            }
 
             if (preg_match($regExpBind, $appServiceFile)) {
                 $newFileContent = preg_replace($regExpBind, '${1}' . "\n\t\t" . $name . "Interface::class => " . $name . "Repository::class,", $appServiceFile);
