@@ -55,10 +55,10 @@ class MakeCacheRepositoryCommand extends Command
         $this->createFile($name, $this->templatePath . '/EloquentModelRepository.stub', $this->repositorieEloquentPath . "/$name" . "Repository.php", 'Eloquent Repository');
         //Create Cache Repository
         $this->createFile($name, $this->templatePath . '/ModelCacheRepository.stub', $this->repositorieCachePath . "/$name" . "CacheRepository.php", 'Cache Repository');
+        //Changing bindings in App Service Provider
+        $this->chargeBindInAppProvider($name);
         //Comment in console the code for the Controller
         $this->getCodeForController($name, $this->templatePath . '/ControllerModelRepository.stub');
-
-        $this->chargeBindInAppProvider($name);
     }
 
     public function chargeBindInAppProvider($name)
