@@ -4,7 +4,7 @@ namespace App\Repositories\EloquentRepositories;
 
 use App\Models\NameModel;
 use App\Repositories\NameModelRepositoryInterface;
-use Xkairo\CacheRepositoryLaravel\Repositories\BaseRepository;
+use Xkairo\CacheRepositoryLaravel\Repositories\EloquentRepositories\BaseRepository;
 
 class NameModelRepository extends BaseRepository implements NameModelRepositoryInterface
 {
