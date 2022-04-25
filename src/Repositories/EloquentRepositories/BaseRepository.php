@@ -29,7 +29,13 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
     public function paginate(int $quantity)
     {
-        return $this->model->paginate($quantity);
+        $query = $this->model;
+
+        if ($this->relations && count($this->relations) > 0) {
+            $query->with($this->relations);
+        }
+
+        return $query->paginate($quantity);
     }
 
     public function getById(int $id)
