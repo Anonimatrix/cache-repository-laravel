@@ -51,19 +51,19 @@ abstract class BaseCache
 
     public function update(array $data, int $id)
     {
-        return $this->cache->tags([$this->key])->forget($this->key . "-$id");
+        $this->cache->tags([$this->key])->forget($this->key . "-$id");
         return $this->repository->update($data, $id);
     }
 
     public function delete(int $id)
     {
-        return $this->cache->tags([$this->key])->forget($this->key . "-$id");
+        $this->cache->tags([$this->key])->forget($this->key . "-$id");
         return $this->repository->delete($id);
     }
 
     public function forceDelete(int $id)
     {
-        return $this->cache->tags([$this->key])->forget($this->key . "-$id");
+        $this->cache->tags([$this->key])->forget($this->key . "-$id");
         return $this->repository->forceDelete($id);
     }
 }
