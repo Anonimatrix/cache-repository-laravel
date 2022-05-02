@@ -60,23 +60,36 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $this->model;
     }
 
-    public function update(array $data, int $id)
+    public function update(array $data, Model|int $model)
     {
-        $instance = $this->getById($id);
+        if (gettype($model) === 'int') {
+            $instance = $this->getById($model);
+        } else {
+            $instance = $model;
+        }
+
 
         return $instance->update($data);
     }
 
-    public function delete(int $id)
+    public function delete(Model|int $model)
     {
-        $instance = $this->getById($id);
+        if (gettype($model) === 'int') {
+            $instance = $this->getById($model);
+        } else {
+            $instance = $model;
+        }
 
         return $instance->delete();
     }
 
-    public function forceDelete(int $id)
+    public function forceDelete(Model|int $model)
     {
-        $instance = $this->getById($id);
+        if (gettype($model) === 'int') {
+            $instance = $this->getById($model);
+        } else {
+            $instance = $model;
+        }
 
         return  $instance->forceDelete();
     }
