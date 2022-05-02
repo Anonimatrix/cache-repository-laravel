@@ -4,6 +4,7 @@ namespace Xkairo\CacheRepositoryLaravel\Cache;
 
 use Illuminate\Http\Request;
 use Illuminate\Cache\Repository as Cache;
+use Illuminate\Database\Eloquent\Model;
 use Xkairo\CacheRepositoryLaravel\Repositories\BaseRepositoryInterface;
 
 abstract class BaseCache
@@ -49,21 +50,27 @@ abstract class BaseCache
         return $this->repository->create($data);
     }
 
-    public function update(array $data, int $id)
+    public function update(array $data, Model|int $model)
     {
-        $this->cache->tags([$this->key])->forget($this->key . "-$id");
-        return $this->repository->update($data, $id);
+        $model_id = gettype($model) === 'integer' ? $model : $model->id;
+
+        $this->cache->tags([$this->key])->forget($this->key . "-$model_id");
+        return $this->repository->update($data, $model);
     }
 
-    public function delete(int $id)
+    public function delete(Model|int $model)
     {
-        $this->cache->tags([$this->key])->forget($this->key . "-$id");
-        return $this->repository->delete($id);
+        $model_id = gettype($model) === 'integer' ? $model : $model->id;
+
+        $this->cache->tags([$this->key])->forget($this->key . "-$model_id");
+        return $this->repository->delete($model);
     }
 
-    public function forceDelete(int $id)
+    public function forceDelete(Model|int $model)
     {
-        $this->cache->tags([$this->key])->forget($this->key . "-$id");
-        return $this->repository->forceDelete($id);
+        $model_id = gettype($model) === 'integer' ? $model : $model->id;
+
+        $this->cache->tags([$this->key])->forget($this->key . "-$model_id");
+        return $this->repository->forceDelete($model);
     }
 }
