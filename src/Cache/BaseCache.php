@@ -39,7 +39,7 @@ abstract class BaseCache
 
     public function getById(int $id)
     {
-        return $this->cache->tags([$this->key])->remember($this->key . "-$id", self::TTL, function () use ($id) {
+        return $this->cache->tags([$this->key . "-$id"])->remember($this->key . "-$id-get-by-id", self::TTL, function () use ($id) {
             return $this->repository->getById($id);
         });
     }
@@ -54,7 +54,7 @@ abstract class BaseCache
     {
         $model_id = gettype($model) === 'integer' ? $model : $model->id;
 
-        $this->cache->tags([$this->key])->forget($this->key . "-$model_id");
+        $this->cache->tags([$this->key . "-$model_id"])->flush();
         return $this->repository->update($data, $model);
     }
 
