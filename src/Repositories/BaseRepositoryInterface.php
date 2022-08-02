@@ -17,4 +17,18 @@ interface BaseRepositoryInterface
     public function delete(int $id);
 
     public function forceDelete(int $id);
+
+    /**
+     * Return elements sorted and filtered
+     * 
+     * @param array $sort_by
+     * @param array $filters
+     * @param array $options = [
+     *      'paginate' => (int|null)
+     * ]
+     * 
+     * @return Collection
+     * 
+     */
+    public function sortedWithFilters(array $sort_by, array $filters, array $options);
 }

@@ -93,4 +93,26 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
         return  $instance->forceDelete();
     }
+
+    public function sortedWithFilters(array $sort_by, array $filters, array $options)
+    {
+        $query = $this->model;
+        list($paginate) = $options;
+
+        if ($this->relations && count($this->relations) > 0) {
+            $query->with($this->relations);
+        }
+
+        $query->orderBy($sort_by);
+
+        foreach ($filters as $filter) {
+            $query->where($filter);
+        }
+
+        if ($paginate) {
+            return $query->paginate($paginate);
+        }
+
+        return $query->get();
+    }
 }

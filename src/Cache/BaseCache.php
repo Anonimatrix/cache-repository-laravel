@@ -7,7 +7,7 @@ use Illuminate\Cache\Repository as Cache;
 use Illuminate\Database\Eloquent\Model;
 use Xkairo\CacheRepositoryLaravel\Repositories\BaseRepositoryInterface;
 
-abstract class BaseCache
+abstract class BaseCache implements BaseRepositoryInterface
 {
     protected $repository;
     protected $cache;
@@ -72,5 +72,12 @@ abstract class BaseCache
 
         $this->cache->tags([$this->key])->forget($this->key . "-$model_id");
         return $this->repository->forceDelete($model);
+    }
+
+    public function sortedWithFilters(array $sort_by, array $filters, array $options)
+    {
+        return $this->cache->tags([$this->key . 's'])->remember($this->key . "s-page-{$this->request->page}-filters-{$filters}-options-{$options}-sort_by-{$sort_by}", self::TTL, function () use ($sort_by, $filters, $options) {
+            return $this->repository->sortedWithFilters($sort_by, $filters, $options);
+        });
     }
 }
