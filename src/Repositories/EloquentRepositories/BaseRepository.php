@@ -16,24 +16,28 @@ abstract class BaseRepository implements BaseRepositoryInterface
         $this->model = $model;
     }
 
-    public function all()
+    public function all(array $sort_by = ['id', 'DESC'], array $filters = [])
     {
         $query = $this->model;
 
         if ($this->relations && count($this->relations) > 0) {
             $query->with($this->relations);
         }
+
+        $this->sortAndFilter($query, $sort_by, $filters);
 
         return $query->get();
     }
 
-    public function paginate(int $quantity)
+    public function paginate(int $quantity, array $sort_by = ['id', 'DESC'], array $filters = [])
     {
         $query = $this->model;
 
         if ($this->relations && count($this->relations) > 0) {
             $query->with($this->relations);
         }
+
+        $this->sortAndFilter($query, $sort_by, $filters);
 
         return $query->paginate($quantity);
     }
@@ -94,25 +98,14 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return  $instance->forceDelete();
     }
 
-    public function sortedWithFilters(array $sort_by, array $filters, array $options)
+    protected function sortAndFilter(&$query, array $sort_by = ['id', 'DESC'], array $filters = [])
     {
-        $query = $this->model;
-        list($paginate) = $options;
-
-        if ($this->relations && count($this->relations) > 0) {
-            $query->with($this->relations);
-        }
-
         $query->orderBy($sort_by);
 
         foreach ($filters as $filter) {
             $query->where($filter);
         }
 
-        if ($paginate) {
-            return $query->paginate($paginate);
-        }
-
-        return $query->get();
+        return $query;
     }
 }

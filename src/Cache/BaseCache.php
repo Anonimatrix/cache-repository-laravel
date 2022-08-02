@@ -23,17 +23,17 @@ abstract class BaseCache implements BaseRepositoryInterface
         $this->key = $key;
     }
 
-    public function all()
+    public function all(array $sort_by = ['id', 'DESC'], array $filters = [])
     {
-        return $this->cache->tags([$this->key . 's'])->remember($this->key . 's', self::TTL, function () {
-            return $this->repository->all();
+        return $this->cache->tags([$this->key . 's'])->remember($this->key . "s-filters-{$filters}-sort_by-{$sort_by}", self::TTL, function () use ($sort_by, $filters) {
+            return $this->repository->all($sort_by, $filters);
         });
     }
 
-    public function paginate(int $quantity)
+    public function paginate(int $quantity, array $sort_by = ['id', 'DESC'], array $filters = [])
     {
-        return $this->cache->tags([$this->key . 's'])->remember($this->key . "s-page-{$this->request->page}", self::TTL, function () use ($quantity) {
-            return $this->repository->paginate($quantity);
+        return $this->cache->tags([$this->key . 's'])->remember($this->key . "s-page-{$this->request->page}-filters-{$filters}-sort_by-{$sort_by}", self::TTL, function () use ($quantity, $sort_by, $filters) {
+            return $this->repository->paginate($quantity, $sort_by, $filters);
         });
     }
 
@@ -72,12 +72,5 @@ abstract class BaseCache implements BaseRepositoryInterface
 
         $this->cache->tags([$this->key])->forget($this->key . "-$model_id");
         return $this->repository->forceDelete($model);
-    }
-
-    public function sortedWithFilters(array $sort_by, array $filters, array $options)
-    {
-        return $this->cache->tags([$this->key . 's'])->remember($this->key . "s-page-{$this->request->page}-filters-{$filters}-options-{$options}-sort_by-{$sort_by}", self::TTL, function () use ($sort_by, $filters, $options) {
-            return $this->repository->sortedWithFilters($sort_by, $filters, $options);
-        });
     }
 }

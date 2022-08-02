@@ -4,9 +4,9 @@ namespace Xkairo\CacheRepositoryLaravel\Repositories;
 
 interface BaseRepositoryInterface
 {
-    public function all();
+    public function all(array $sort_by = ['id', 'DESC'], array $filters = []);
 
-    public function paginate(int $quantity);
+    public function paginate(int $quantity, array $sort_by = ['id', 'DESC'], array $filters = []);
 
     public function getById(int $id);
 
@@ -17,18 +17,4 @@ interface BaseRepositoryInterface
     public function delete(int $id);
 
     public function forceDelete(int $id);
-
-    /**
-     * Return elements sorted and filtered
-     * 
-     * @param array $sort_by
-     * @param array $filters
-     * @param array $options = [
-     *      'paginate' => (int|null)
-     * ]
-     * 
-     * @return Collection
-     * 
-     */
-    public function sortedWithFilters(array $sort_by, array $filters, array $options);
 }
