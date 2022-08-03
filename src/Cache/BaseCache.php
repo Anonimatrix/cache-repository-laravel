@@ -25,14 +25,14 @@ abstract class BaseCache implements BaseRepositoryInterface
 
     public function all(array $sort_by = ['id', 'DESC'], array $filters = [])
     {
-        return $this->cache->tags([$this->key . 's'])->remember($this->key . "s{$this->getRememberStringWithFiltersAndSortBy($sort_by,$filters)}", self::TTL, function () use ($sort_by, $filters) {
+        return $this->cache->tags([$this->key . 's'])->remember($this->getRememberString(true, $sort_by = $sort_by, $filters = $filters), self::TTL, function () use ($sort_by, $filters) {
             return $this->repository->all($sort_by, $filters);
         });
     }
 
     public function paginate(int $quantity, array $sort_by = ['id', 'DESC'], array $filters = [])
     {
-        return $this->cache->tags([$this->key . 's'])->remember($this->key . "s-page-{$this->request->page}{$this->getRememberStringWithFiltersAndSortBy($sort_by,$filters)}", self::TTL, function () use ($quantity, $sort_by, $filters) {
+        return $this->cache->tags([$this->key . 's'])->remember($this->getRememberString(true, $this->request->page, null, $sort_by, $filters), self::TTL, function () use ($quantity, $sort_by, $filters) {
             return $this->repository->paginate($quantity, $sort_by, $filters);
         });
     }
@@ -74,8 +74,14 @@ abstract class BaseCache implements BaseRepositoryInterface
         return $this->repository->forceDelete($model);
     }
 
-    protected function getRememberStringWithFiltersAndSortBy($sort_by, $filters)
+    protected function getRememberString($plural = false, $page = null, $extra = null, $sort_by = null, $filters = null)
     {
-        return "-filters-" . implode($filters) . "-sort_by-" . implode($sort_by);
+        return
+            $this->key
+            . ($plural ? "s" : "")
+            . ($page ? "-page-{$page}" : "")
+            . ($filters ? "-filters-" . implode($filters) : "")
+            . ($sort_by ? "-sort_by-" . implode($sort_by) : "")
+            . ($extra ? "-$extra" : "");
     }
 }
