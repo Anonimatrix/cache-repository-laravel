@@ -100,10 +100,10 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
     protected function sortAndFilter(&$query, array $sort_by = ['id', 'DESC'], array $filters = [])
     {
-        $query->orderBy($sort_by);
+        $query = $query->orderBy(...$sort_by);
 
         foreach ($filters as $filter) {
-            $query->where($filter);
+            $query = $query->where($filter);
         }
 
         return $query;
