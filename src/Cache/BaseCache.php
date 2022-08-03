@@ -76,6 +76,6 @@ abstract class BaseCache implements BaseRepositoryInterface
 
     protected function getRememberStringWithFiltersAndSortBy($sort_by, $filters)
     {
-        return "-filters-{${implode($filters)}}-sort_by-{${implode($sort_by)}}";
+        return "-filters-" . implode($filters) . "-sort_by-" . implode($sort_by);
     }
 }
