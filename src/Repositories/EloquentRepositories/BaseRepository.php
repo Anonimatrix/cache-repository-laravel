@@ -21,7 +21,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
         $query = $this->model;
 
         if ($this->relations && count($this->relations) > 0) {
-            $query->with($this->relations);
+            $query = $query->with($this->relations);
         }
 
         $this->sortAndFilter($query, $sort_by, $filters);
@@ -34,7 +34,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
         $query = $this->model;
 
         if ($this->relations && count($this->relations) > 0) {
-            $query->with($this->relations);
+            $query = $query->with($this->relations);
         }
 
         $this->sortAndFilter($query, $sort_by, $filters);

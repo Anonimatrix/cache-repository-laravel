@@ -25,7 +25,7 @@ abstract class BaseCache implements BaseRepositoryInterface
 
     public function all(array $sort_by = ['id', 'DESC'], array $filters = [])
     {
-        return $this->cache->tags([$this->key . 's'])->remember($this->getRememberString(true, $sort_by = $sort_by, $filters = $filters), self::TTL, function () use ($sort_by, $filters) {
+        return $this->cache->tags([$this->key . 's'])->remember($this->getRememberString(true, null, null, $sort_by = $sort_by, $filters = $filters), self::TTL, function () use ($sort_by, $filters) {
             return $this->repository->all($sort_by, $filters);
         });
     }
@@ -74,13 +74,17 @@ abstract class BaseCache implements BaseRepositoryInterface
         return $this->repository->forceDelete($model);
     }
 
-    protected function getRememberString($plural = false, $page = null, $extra = null, $sort_by = null, $filters = null)
+    protected function getRememberString($plural = false, $page = null, $extra = null, $sort_by = null, $filters = [])
     {
+        $filtersString = "";
+        foreach ($filters as $filter) {
+            $filtersString .= implode("", $filter);
+        }
         return
             $this->key
             . ($plural ? "s" : "")
             . ($page ? "-page-{$page}" : "")
-            . ($filters ? "-filters-" . implode($filters) : "")
+            . ($filters ? "-filters-" . $filtersString : "")
             . ($sort_by ? "-sort_by-" . implode($sort_by) : "")
             . ($extra ? "-$extra" : "");
     }
