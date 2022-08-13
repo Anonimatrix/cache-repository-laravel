@@ -66,34 +66,21 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
     public function update(array $data, Model|int $model)
     {
-        if (gettype($model) === 'integer') {
-            $instance = $this->getById($model);
-        } else {
-            $instance = $model;
-        }
-
+        $instance = $this->checkInstanceOrId($model);
 
         return $instance->update($data);
     }
 
     public function delete(Model|int $model)
     {
-        if (gettype($model) === 'integer') {
-            $instance = $this->getById($model);
-        } else {
-            $instance = $model;
-        }
+        $instance = $this->checkInstanceOrId($model);
 
         return $instance->delete();
     }
 
     public function forceDelete(Model|int $model)
     {
-        if (gettype($model) === 'integer') {
-            $instance = $this->getById($model);
-        } else {
-            $instance = $model;
-        }
+        $instance = $this->checkInstanceOrId($model);
 
         return  $instance->forceDelete();
     }
@@ -107,5 +94,16 @@ abstract class BaseRepository implements BaseRepositoryInterface
         }
 
         return $query;
+    }
+
+    protected function checkInstanceOrId(Model|int $model)
+    {
+        if (gettype($model) === 'integer') {
+            $instance = $this->getById($model);
+        } else {
+            $instance = $model;
+        }
+
+        return $instance;
     }
 }
