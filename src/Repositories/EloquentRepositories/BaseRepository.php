@@ -16,9 +16,11 @@ abstract class BaseRepository implements BaseRepositoryInterface
         $this->model = $model;
     }
 
-    public function all(array $sort_by = ['id', 'DESC'], array $filters = [])
+    public function all(array $sort_by = ['id', 'DESC'], array $filters = [], bool $withTrashed = false)
     {
         $query = $this->model;
+
+        if ($withTrashed) $this->withTrashed($query);
 
         if ($this->relations && count($this->relations) > 0) {
             $query = $query->with($this->relations);
@@ -29,9 +31,11 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $query->get();
     }
 
-    public function paginate(int $quantity, array $sort_by = ['id', 'DESC'], array $filters = [])
+    public function paginate(int $quantity, array $sort_by = ['id', 'DESC'], array $filters = [], bool $withTrashed = false)
     {
         $query = $this->model;
+
+        if ($withTrashed) $this->withTrashed($query);
 
         if ($this->relations && count($this->relations) > 0) {
             $query = $query->with($this->relations);
@@ -42,12 +46,20 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $query->paginate($quantity);
     }
 
-    public function getById(int $id)
+    public function getById(int $id, bool $withTrashed = false)
     {
-        $instance = $this->model->find($id);
+        $query = $this->model;
+
+        if ($withTrashed) $this->withTrashed($query);
+
+        $instance = $query->where('id', $id)->get();
 
         if ($instance === null) {
             throw new ModelNotFoundException();
+        }
+
+        if ($this->relations && count($this->relations) > 0) {
+            $instance->load($this->relations);
         }
 
         return $instance;
@@ -85,17 +97,38 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return  $instance->forceDelete();
     }
 
+    public function load(Model|int $model, array|string $relations)
+    {
+        $instance = $this->checkInstanceOrId($model);
+
+        return $instance->load($relations);
+    }
+
+    public function loadWithTrashed(Model|int $model, array|string $relations)
+    {
+        $instance = $this->checkInstanceOrId($model);
+
+        $arrayRelations = is_string($relations) ? [$relations] : $relations;
+
+        $relationsTrashed = array();
+
+        foreach ($arrayRelations as $relation) {
+            $relationsTrashed[$relation] = fn ($q) => $q->withTrashed();
+        }
+    }
+
     protected function sortAndFilter(&$query, array $sort_by = ['id', 'DESC'], array $filters = [])
     {
         $query = $query->orderBy(...$sort_by);
 
         foreach ($filters as $filter) {
-            $query = $query->where($filter);
+            $query = $query->where(...$filter);
         }
 
         return $query;
     }
 
+    //TODO Change the name of this method (convertInstanceOrIdInInstance)
     protected function checkInstanceOrId(Model|int $model)
     {
         if (gettype($model) === 'integer') {
@@ -105,5 +138,12 @@ abstract class BaseRepository implements BaseRepositoryInterface
         }
 
         return $instance;
+    }
+
+    protected function withTrashed($query)
+    {
+        if (function_exists('withTrashed')) {
+            $query = $query->withTrashed();
+        }
     }
 }
