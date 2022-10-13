@@ -52,7 +52,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
         if ($withTrashed) $this->withTrashed($query);
 
-        $instance = $query->where('id', $id)->get();
+        $instance = $query->where('id', $id)->first();
 
         if ($instance === null) {
             throw new ModelNotFoundException();
