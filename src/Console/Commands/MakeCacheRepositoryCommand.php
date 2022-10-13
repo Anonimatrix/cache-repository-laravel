@@ -79,13 +79,14 @@ class MakeCacheRepositoryCommand extends Command
                 $importEloquentRepositoryCode = "use App\Repositories\EloquentRepositories\\" . $name . "Repository;";
 
                 $importBindings = "\n" . $importEloquentRepositoryCode . "\n" . $importInterfaceCode;
-                $newFileContent = preg_replace($regExpNamespace, '${1}' . "\n" . $importBindings, $appServiceFile);
+                if (strpos($appServiceFile, $importBindings) === false) $newFileContent = preg_replace($regExpNamespace, '${1}' . "\n" . $importBindings, $appServiceFile);
             } else {
                 $this->error('App Service Provider has a invalid format');
             }
 
             if (preg_match($regExpBind, $appServiceFile)) {
-                $newFileContent = preg_replace($regExpBind, '${1}' . "\n\t\t" . $name . "RepositoryInterface::class => " . $name . "Repository::class,", $newFileContent ?? $appServiceFile);
+                $codeBinding = '${1}' . "\n\t\t" . $name . "RepositoryInterface::class => " . $name . "Repository::class,";
+                if (strpos($appServiceFile, $codeBinding) === false) $newFileContent = preg_replace($regExpBind, $codeBinding, $newFileContent ?? $appServiceFile);
             } else if (preg_match($regExpBeginningClassAppServiceProvider, $appServiceFile)) {
                 $codeBinding = '${1}' . "\n\n\tpublic \$bindings = [\n\t\t" . $name . "RepositoryInterface::class => " . $name . "Repository::class,\n\t];\n";
                 $newFileContent = preg_replace($regExpBeginningClassAppServiceProvider, $codeBinding, $newFileContent ?? $appServiceFile);

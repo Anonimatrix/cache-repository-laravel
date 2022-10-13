@@ -25,6 +25,8 @@ class CacheRepositoryTest extends TestCase
         $this->deletePaths();
     }
 
+    //TODO test_app_service_provider
+
     public function test_not_create_if_exists()
     {
         $model = "Subcategorie";

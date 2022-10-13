@@ -25,14 +25,14 @@ abstract class BaseCache implements BaseRepositoryInterface
 
     public function all(array $sort_by = ['id', 'DESC'], array $filters = [], bool $withTrashed = false)
     {
-        return $this->cache->tags([$this->key . 's'])->remember($this->getRememberString(true, null, null, $sort_by = $sort_by, $filters = $filters, $withTrashed), self::TTL, function () use ($sort_by, $filters, $withTrashed) {
+        return $this->cache->tags([$this->key])->remember($this->getRememberString(true, null, null, $sort_by = $sort_by, $filters = $filters, $withTrashed), self::TTL, function () use ($sort_by, $filters, $withTrashed) {
             return $this->repository->all($sort_by, $filters, $withTrashed);
         });
     }
 
     public function paginate(int $quantity, array $sort_by = ['id', 'DESC'], array $filters = [], bool $withTrashed = false)
     {
-        return $this->cache->tags([$this->key . 's'])->remember($this->getRememberString(true, $this->request->page, null, $sort_by, $filters, $withTrashed), self::TTL, function () use ($quantity, $sort_by, $filters, $withTrashed) {
+        return $this->cache->tags([$this->key])->remember($this->getRememberString(true, $this->request->page, null, $sort_by, $filters, $withTrashed), self::TTL, function () use ($quantity, $sort_by, $filters, $withTrashed) {
             return $this->repository->paginate($quantity, $sort_by, $filters, $withTrashed);
         });
     }
@@ -46,7 +46,7 @@ abstract class BaseCache implements BaseRepositoryInterface
 
     public function create(array $data)
     {
-        $this->cache->tags([$this->key . 's'])->flush();
+        $this->cache->tags([$this->key])->flush();
         return $this->repository->create($data);
     }
 
@@ -54,7 +54,7 @@ abstract class BaseCache implements BaseRepositoryInterface
     {
         $model_id = $this->checkInstanceOrId($model);
 
-        $this->cache->tags([$this->key . "-$model_id"])->flush();
+        $this->cache->tags([$this->key . "-$model_id", $this->key])->flush();
         return $this->repository->update($data, $model);
     }
 
@@ -62,7 +62,7 @@ abstract class BaseCache implements BaseRepositoryInterface
     {
         $model_id = $this->checkInstanceOrId($model);
 
-        $this->cache->tags([$this->key])->forget($this->key . "-$model_id");
+        $this->cache->tags([$this->key, $this->key . "-$model_id"])->flush();
         return $this->repository->delete($model);
     }
 
@@ -70,7 +70,7 @@ abstract class BaseCache implements BaseRepositoryInterface
     {
         $model_id = $this->checkInstanceOrId($model);
 
-        $this->cache->tags([$this->key])->forget($this->key . "-$model_id");
+        $this->cache->tags([$this->key, $this->key . "-$model_id"])->flush();
         return $this->repository->forceDelete($model);
     }
 

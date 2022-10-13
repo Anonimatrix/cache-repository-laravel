@@ -10,7 +10,7 @@
         }
     }
 
-    public function __construct(NameModelCache $name_modelCache, Request $request)
+    public function __construct(NameModelCacheRepository $name_modelCache, Request $request)
     {
         $this->repository = $name_modelCache;
         $this->setNameModel($request);
